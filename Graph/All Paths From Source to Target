@@ -1,0 +1,26 @@
+# problem - https://leetcode.com/problems/all-paths-from-source-to-target/description/
+# code - 
+class Solution {
+public:
+    void DFS(int node, vector<vector<int>>& adj, vector<int>& temp, vector<vector<int>>& ans){
+        temp.push_back(node);
+        if(node == adj.size()-1){
+            ans.push_back(temp);
+        }
+        else{
+            for(int &v : adj[node]){
+                DFS(v, adj, temp, ans);
+            }
+        }
+        temp.pop_back();
+    }
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& adj) {
+        vector<vector<int>> ans;
+        for(int &v : adj[0]){
+            vector<int> temp;
+            temp.push_back(0);
+            DFS(v, adj, temp, ans);
+        }
+        return ans;
+    }
+};
