@@ -1,0 +1,26 @@
+# problem link - https://leetcode.com/problems/minimum-time-to-collect-all-apples-in-a-tree/description/
+# code - 
+class Solution {
+public:
+    int DFS(int curr, int parent, unordered_map<int, vector<int>>& adj, vector<bool>& hasApple){
+        int time = 0;
+        for(int &child : adj[curr]){
+            if(child == parent)continue;
+            int time_of_child = DFS(child, curr, adj, hasApple);
+            if(time_of_child || hasApple[child]){
+                time += 2+time_of_child;
+            }
+        }
+        return time;
+    }
+    int minTime(int n, vector<vector<int>>& edges, vector<bool>& hasApple) {
+        unordered_map<int, vector<int>> adj;
+        for(vector<int>& vec : edges){
+            int u = vec[0];
+            int v = vec[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        return DFS(0, -1, adj, hasApple);
+    }
+};
