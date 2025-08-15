@@ -1,0 +1,39 @@
+# problem link - https://leetcode.com/problems/number-of-nodes-in-the-sub-tree-with-the-same-label/description/
+# code - 
+class Solution {
+public:
+    vector<int> DFS(int curr, int parent, unordered_map<int, vector<int>>& adj, string &labels, vector<int>& ans) {
+        vector<int> freq(26, 0);
+        
+        // Count current node's label
+        freq[labels[curr] - 'a'] = 1;
+
+        for (int v : adj[curr]) {
+            if (v == parent) continue;
+
+            vector<int> childFreq = DFS(v, curr, adj, labels, ans);
+            
+            // Merge child's frequency into current node's frequency
+            for (int i = 0; i < 26; i++) {
+                freq[i] += childFreq[i];
+            }
+        }
+        
+        // Answer for this node = frequency of its label in its subtree
+        ans[curr] = freq[labels[curr] - 'a'];
+        return freq;
+    }
+
+    vector<int> countSubTrees(int n, vector<vector<int>>& edges, string labels) {
+        unordered_map<int, vector<int>> adj;
+        for (auto &vec : edges) {
+            int u = vec[0], v = vec[1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        
+        vector<int> ans(n, 0);
+        DFS(0, -1, adj, labels, ans);
+        return ans;
+    }
+};
