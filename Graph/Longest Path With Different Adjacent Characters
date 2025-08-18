@@ -1,0 +1,44 @@
+# problem link - https://leetcode.com/problems/longest-path-with-different-adjacent-characters/description/
+# code - 
+class Solution {
+public:
+    int ans = 1;  // global max path length
+
+    int DFS(int curr, int par, unordered_map<int, vector<int>>& adj, string &s) {
+        int longest = 0, secondLongest = 0; 
+
+        for (int v : adj[curr]) {
+            if (v == par) continue;
+
+            int childLen = DFS(v, curr, adj, s);
+
+            // only consider child if chars are different
+            if (s[v] != s[curr]) {
+                if (childLen > longest) {
+                    secondLongest = longest;
+                    longest = childLen;
+                } else if (childLen > secondLongest) {
+                    secondLongest = childLen;
+                }
+            }
+        }
+
+        // update global answer (path passing through curr)
+        ans = max(ans, 1 + longest + secondLongest);
+
+        return 1 + longest; // return longest chain downward
+    }
+
+    int longestPath(vector<int>& parent, string s) {
+        int n = parent.size();
+        unordered_map<int, vector<int>> adj;
+
+        for (int i = 1; i < n; i++) {
+            adj[parent[i]].push_back(i);
+            adj[i].push_back(parent[i]);
+        }
+
+        DFS(0, -1, adj, s);
+        return ans;
+    }
+};
