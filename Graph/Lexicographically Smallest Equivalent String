@@ -1,0 +1,38 @@
+# problem link - https://leetcode.com/problems/lexicographically-smallest-equivalent-string/description/
+# code - 
+class Solution {
+public:
+    vector<int> parent;
+    
+    int find(int x){
+        if(x == parent[x]) return x;
+        return parent[x] = find(parent[x]);
+    }
+    
+    void unions(int x, int y){
+        int px = find(x);
+        int py = find(y);
+        if(px == py) return;
+        if(px < py){
+            parent[py] = px;
+        } else {
+            parent[px] = py;
+        }
+    }
+    
+    string smallestEquivalentString(string s1, string s2, string baseStr) {
+        parent.resize(26);
+        for(int i=0; i<26; i++) parent[i] = i;
+
+        int n = s1.size();
+        for(int i=0; i<n; i++){
+            unions(s1[i]-'a', s2[i]-'a');
+        }
+
+        string ans = "";
+        for(char c : baseStr){
+            ans += (find(c-'a') + 'a');
+        }
+        return ans;
+    }
+};
