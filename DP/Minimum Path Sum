@@ -1,0 +1,26 @@
+# problem link - https://leetcode.com/problems/minimum-path-sum/
+# code - 
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> dp(m, vector<int>(n, 0));
+        dp[m-1][n-1] = grid[m-1][n-1];
+
+        for(int r=m-2; r>=0; r--){
+            dp[r][n-1] = dp[r+1][n-1]+grid[r][n-1];
+        }
+
+        for(int c=n-2; c>=0; c--){
+            dp[m-1][c] = dp[m-1][c+1] + grid[m-1][c];
+        }
+
+        for(int r=m-2; r>=0; r--){
+            for(int c=n-2; c>=0; c--){
+                dp[r][c] = grid[r][c] + min(dp[r+1][c], dp[r][c+1]);
+            }
+        }
+        return dp[0][0];
+    }
+};
