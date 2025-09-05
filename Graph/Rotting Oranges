@@ -1,0 +1,55 @@
+# problem link - https://leetcode.com/problems/rotting-oranges/
+# code - 
+class Solution {
+public:
+    vector<vector<int>> directions = {{1,0},{-1,0},{0,1},{0,-1}};
+    
+    bool canRotten(int x, int y, vector<vector<int>>& grid, int m, int n){
+        return x>=0 && x<m && y>=0 && y<n && grid[x][y]==1;
+    }
+    
+    int orangesRotting(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+        int fresh = 0;  // count fresh oranges
+        queue<pair<int,int>> q;
+
+        // Step 1: Count fresh oranges and push rotten ones
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 2){
+                    q.push({i,j});
+                } else if(grid[i][j] == 1){
+                    fresh++;
+                }
+            }
+        }
+
+        if(fresh == 0) return 0;  // no fresh orange → no time needed
+
+        int time = 0;
+
+        // Step 2: BFS
+        while(!q.empty()){
+            int s = q.size();
+            while(s--){
+                auto [x, y] = q.front();
+                q.pop();
+
+                for(auto &dir : directions){
+                    int x_ = x + dir[0];
+                    int y_ = y + dir[1];
+                    if(canRotten(x_, y_, grid, m, n)){
+                        q.push({x_, y_});
+                        grid[x_][y_] = 2;  // mark as rotten
+                        fresh--;           // one less fresh orange
+                    }
+                }
+            }
+            time++;
+        }
+
+        // Step 3: Check if any fresh left
+        return fresh == 0 ? time-1 : -1;
+    }
+};
